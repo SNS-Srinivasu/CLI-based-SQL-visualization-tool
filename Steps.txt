@@ -1,0 +1,154 @@
+##########################################
+Author SNS-Srinivasu
+
+Title - CLI-Based SQL Visualization Tool
+
+Date 27-12-2025
+
+Version - V1
+
+Operating System (Linux, macOS)
+
+##########################################
+
+
+###### Install Dependencies ###########
+
+brew install graphviz
+python3 -m venv venv
+source venv/bin/activate
+pip install tabulate
+pip freeze > requirements.txt
+pip install rich plotext graphviz mysql-connector-python
+
+###### Create Project folder #########
+
+mkdir sql-cli-visualizer
+cd sql-cli-visualizer
+
+###### Create Files ##########3
+
+
+mkdir db visualize config
+touch main.py
+touch db/connector.py
+touch visualize/table_view.py
+touch visualize/chart_view.py
+touch visualize/er_diagram.py
+touch config/db_config.yaml
+
+
+#### config/db_config.yaml #####
+
+host: localhost
+user: root
+password: your_mysql_password
+database: your_database_name
+
+##### db/connector.py ########
+
+import mysql.connector
+import yaml
+
+def get_connection():
+    with open("config/db_config.yaml") as f:
+        cfg = yaml.safe_load(f)
+
+    return mysql.connector.connect(
+        host=cfg["host"],
+        user=cfg["user"],
+        password=cfg["password"],
+        database=cfg["database"]
+    )
+
+###### visualize/table_view.py #######
+
+from rich.console import Console
+from rich.table import Table
+
+def show_table(columns, rows):
+    table = Table(title="SQL Query Results")
+    for col in columns:
+        table.add_column(col)
+
+    for row in rows:
+        table.add_row(*[str(x) for x in row])
+
+    Console().print(table)
+
+######## visualize/chart_view.py ########
+
+import plotext as plt
+
+def bar_chart(x, y, title="Chart"):
+    plt.clear_data()
+    plt.bar(x, y)
+    plt.title(title)
+    plt.show()
+
+###### visualize/er_diagram.py #######
+
+
+from graphviz import Digraph
+
+def generate_er(cursor):
+    dot = Digraph(comment="ER Diagram", format="png")
+
+    cursor.execute("SHOW TABLES")
+    tables = [t[0] for t in cursor.fetchall()]
+
+    for table in tables:
+        cursor.execute(f"DESCRIBE {table}")
+        cols = cursor.fetchall()
+        label = f"{table}|"
+        for c in cols:
+            label += f"{c[0]}\\l"
+        dot.node(table, shape="record", label=label)
+
+    dot.render("er_diagram")
+    print("ER diagram generated: er_diagram.png")
+
+
+########### main.py #########
+
+
+import argparse
+from db.connector import get_connection
+from visualize.table_view import show_table
+from visualize.chart_view import bar_chart
+from visualize.er_diagram import generate_er
+
+parser = argparse.ArgumentParser(description="CLI SQL Visualizer")
+parser.add_argument("--query", help="SQL query")
+parser.add_argument("--chart", action="store_true")
+parser.add_argument("--er", action="store_true")
+
+args = parser.parse_args()
+
+conn = get_connection()
+cursor = conn.cursor()
+
+if args.query:
+    cursor.execute(args.query)
+    rows = cursor.fetchall()
+    columns = [i[0] for i in cursor.description]
+
+    show_table(columns, rows)
+
+    if args.chart:
+        x = [r[0] for r in rows]
+        y = [r[1] for r in rows]
+        bar_chart(x, y, "Query Chart")
+
+if args.er:
+    generate_er(cursor)
+
+cursor.close()
+conn.close()
+
+######### Run #############
+
+python main.py --query "SELECT * FROM users"
+
+
+

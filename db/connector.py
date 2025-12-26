@@ -1,14 +1,19 @@
+import os
 import mysql.connector
-import yaml
 
-def get_connection():
-    with open("config/db_config.yaml") as f:
-        cfg = yaml.safe_load(f)
+def get_connection(database=None):
+    """
+    Connect to MySQL using default credentials, override with environment variables if provided.
+    """
+    host = os.getenv("MYSQL_HOST", "localhost")
+    user = os.getenv("MYSQL_USER", "root")
+    password = os.getenv("MYSQL_PASSWORD", "saipandu")  # default password
 
-    return mysql.connector.connect(
-        host=cfg["host"],
-        user=cfg["user"],
-        password=cfg["password"],
-        database=cfg["database"]
+    conn = mysql.connector.connect(
+        host=host,
+        user=user,
+        password=password,
+        database=database  # can be None initially
     )
+    return conn
 
