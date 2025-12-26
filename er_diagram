@@ -1,0 +1,8 @@
+// ER Diagram
+digraph {
+	geo [label="geo|GeoID\lGeo\lRegion\l" shape=record]
+	persons [label="persons|Sales Person\lSP ID\lTeam\lLocation\l" shape=record]
+	products [label="products|Product ID\lProduct\lCategory\lSize\lCostPerBox\l" shape=record]
+	shipments [label="shipments|Sales Person\lGeo\lProduct\lDate\lAmount\lBoxes\l" shape=record]
+	shipments_new [label="shipments_new|Sales Person\lGeo\lProduct\lDate\lAmount\lBoxes\l" shape=record]
+}
