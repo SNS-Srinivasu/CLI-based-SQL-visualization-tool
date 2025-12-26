@@ -1,33 +1,32 @@
 import argparse
 from db.connector import get_connection
-from visualize.table_view import show_table
-from visualize.chart_view import bar_chart
-from visualize.er_diagram import generate_er
+from features.explorer import show_databases, show_tables
+from features.schema import describe_table
+from features.join_helper import suggest_joins
 
-parser = argparse.ArgumentParser(description="CLI SQL Visualizer")
-parser.add_argument("--query", help="SQL query")
-parser.add_argument("--chart", action="store_true")
-parser.add_argument("--er", action="store_true")
+parser = argparse.ArgumentParser(description="SQL CLI Visualizer")
+parser.add_argument("--cmd", help="dbs | tables | desc | join")
+parser.add_argument("--table", help="Table name")
 
 args = parser.parse_args()
 
 conn = get_connection()
 cursor = conn.cursor()
 
-if args.query:
-    cursor.execute(args.query)
-    rows = cursor.fetchall()
-    columns = [i[0] for i in cursor.description]
+if args.cmd == "dbs":
+    show_databases(cursor)
 
-    show_table(columns, rows)
+elif args.cmd == "tables":
+    show_tables(cursor)
 
-    if args.chart:
-        x = [r[0] for r in rows]
-        y = [r[1] for r in rows]
-        bar_chart(x, y, "Query Chart")
+elif args.cmd == "desc":
+    describe_table(cursor, args.table)
 
-if args.er:
-    generate_er(cursor)
+elif args.cmd == "join":
+    suggest_joins(cursor, args.table)
+
+else:
+    print("❌ Invalid command")
 
 cursor.close()
 conn.close()
