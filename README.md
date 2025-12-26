@@ -129,17 +129,18 @@ docker run -it -v $(pwd):/app --env MYSQL_HOST=host --env MYSQL_USER=user --env 
 
 ```
 sql-cli-visualizer/
-├── db/
+├── config/             # Configuration files (optional env settings)
+├── db/                 # Database connection utilities
 │   └── connector.py
-├── features/
-│   ├── explorer.py
-│   ├── schema.py
-│   ├── join_helper.py
-│   └── visualizer.py
-├── main.py
-├── requirements.txt
+├── features/           # Core CLI features: explorer, schema, join helper
+├── utils/              # Utility functions
+├── visualize/          # Charting, ER diagram generation
 ├── Dockerfile
-└── README.md / README.txt
+├── README.md / Steps.txt
+├── Project_Files/      # Sample SQL scripts or data files
+├── main.py             # CLI entry point
+└── requirements.txt
+
 ```
 
 ## Future Enhancements:
