@@ -1,24 +1,24 @@
-# Use official Python image
-FROM python:3.14-slim
+# Use official stable Python image
+FROM python:3.12-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy project files
-COPY . /app
-
-# Install system dependencies for graphviz and MySQL
+# Install system dependencies (Graphviz)
 RUN apt-get update && \
     apt-get install -y graphviz && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
+
+# Copy only requirements first (better caching)
+COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Expose optional port (if needed for future web/Streamlit version)
-EXPOSE 8080
+# Copy application code
+COPY . .
 
-# Default command when container runs
+# Default command
 CMD ["python", "main.py"]
 

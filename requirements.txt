@@ -1,8 +1,7 @@
-wheel==0.45.1
 mysql-connector-python
 rich
 plotext
 graphviz
-pyyaml
 tabulate
+pyyaml
 
