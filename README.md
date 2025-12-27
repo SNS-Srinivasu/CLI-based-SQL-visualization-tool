@@ -52,13 +52,12 @@ The SQL CLI Visualizer is a Python-based command-line tool for MySQL databases. 
 
 ## Configuration:
 
-Set MySQL credentials in environment variables or in `db/connector.py`:
+Set MySQL credentials 
 
 ```python
-MYSQL_HOST=localhost
-MYSQL_USER=root
-MYSQL_PASSWORD=yourpassword
-MYSQL_DB=Awesome_Chocolates  # Optional, can be chosen interactively
+export MYSQL_HOST=localhost
+export MYSQL_USER=root
+export MYSQL_PASSWORD=your_mysql_password
 ```
 
 ## Usage:
