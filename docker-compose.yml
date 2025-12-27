@@ -1,28 +1,39 @@
-version: "3.9"
-
 services:
-  mysql:
+  mysql-db:
     image: mysql:8.0
     container_name: mysql-db
-    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: saipandu
+      MYSQL_ROOT_PASSWORD: saipandu   # your root password
+      MYSQL_DATABASE: Awesome_Chocolates  # optional, auto-create a DB
+      MYSQL_USER: sqlviz
+      MYSQL_PASSWORD: sqlviz123
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - sql-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      interval: 10s
+      retries: 5
 
   sql-cli:
     build: .
     container_name: sql-cli
-    depends_on:
-      mysql:
-        condition: service_healthy
     environment:
-      MYSQL_HOST: mysql       # use the service name to connect internally
+      MYSQL_HOST: mysql-db       # connect to MySQL container
       MYSQL_USER: root
       MYSQL_PASSWORD: saipandu
     stdin_open: true
     tty: true
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    networks:
+      - sql-network
+
+volumes:
+  mysql-data:
+
+networks:
+  sql-network:
 
