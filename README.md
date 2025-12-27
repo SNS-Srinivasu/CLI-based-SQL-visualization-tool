@@ -111,6 +111,9 @@ python main.py --er
 
 ```bash
 docker build -t sql-cli-visualizer .
+docker-compose up --build
+docker exec -it sql-cli bash
+python main.py --cmd dbs
 ```
 
 2. Run the container (interactive mode for commands):
@@ -129,16 +132,16 @@ docker run -it -v $(pwd):/app --env MYSQL_HOST=host --env MYSQL_USER=user --env 
 
 ```
 sql-cli-visualizer/
-├── config/             # Configuration files (optional env settings)
-├── db/                 # Database connection utilities
+├── config/             
+├── db/                 
 │   └── connector.py
-├── features/           # Core CLI features: explorer, schema, join helper
-├── utils/              # Utility functions
-├── visualize/          # Charting, ER diagram generation
+├── features/           
+├── utils/              
+├── visualize/          
 ├── Dockerfile
 ├── README.md / Steps.txt
-├── Project_Files/      # Sample SQL scripts or data files
-├── main.py             # CLI entry point
+├── Project_Files/      
+├── main.py             
 └── requirements.txt
 
 ```
