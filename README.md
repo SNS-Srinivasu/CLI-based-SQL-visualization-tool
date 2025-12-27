@@ -57,6 +57,7 @@ Set MySQL credentials
 ```python
 export MYSQL_HOST=localhost
 export MYSQL_USER=root
+export MYSQL_DB=Awesome_Chocolates
 export MYSQL_PASSWORD=your_mysql_password
 ```
 
