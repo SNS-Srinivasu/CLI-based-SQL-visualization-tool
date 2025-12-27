@@ -4,4 +4,5 @@ rich
 plotext
 graphviz
 pyyaml
+tabulate
 
