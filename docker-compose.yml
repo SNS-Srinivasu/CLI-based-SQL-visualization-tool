@@ -1,13 +1,28 @@
 version: "3.9"
 
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: saipandu
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   sql-cli:
     build: .
     container_name: sql-cli
+    depends_on:
+      mysql:
+        condition: service_healthy
     environment:
-      MYSQL_HOST: host.docker.internal
-      MYSQL_USER: sqlviz
-      MYSQL_PASSWORD: sqlviz123
+      MYSQL_HOST: mysql       # use the service name to connect internally
+      MYSQL_USER: root
+      MYSQL_PASSWORD: saipandu
     stdin_open: true
     tty: true
 
